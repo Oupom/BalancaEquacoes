@@ -12,6 +12,10 @@ namespace Assets.Technical.Classes.HUD
         private Dropdown _weightUnit;
         [SerializeField]
         private GameObject _weightBlockCreationPanel;
+        [SerializeField]
+        private GameObject _activityPanelNew;
+        [SerializeField]
+        private GameObject _weightBlockCreationPanelNew;
         //[SerializeField]
       //  private GameObject _authorCreditPanel;
 
@@ -23,6 +27,12 @@ namespace Assets.Technical.Classes.HUD
         public void SetJanela()
         {
             _weightBlockCreationPanel.SetActive(!_weightBlockCreationPanel.activeSelf);
+            GameController.Singleton.PlayClickSound();
+        }
+
+        public void SetJanelaNew()
+        {
+            _weightBlockCreationPanelNew.SetActive(!_weightBlockCreationPanelNew.activeSelf);
             GameController.Singleton.PlayClickSound();
         }
 

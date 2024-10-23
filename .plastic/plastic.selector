@@ -1,0 +1,4 @@
+repository "BalancaEquacoes@Oupom@cloud"
+  path "/"
+    br "/main"
+    co "/main"

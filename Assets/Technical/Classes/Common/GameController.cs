@@ -20,8 +20,11 @@ namespace Common.Controllers
         static string[] peso3={"2","1","1","4","2"};
         static string[] peso4={"1","1","4","4","2"};
         List<string[]> fases=new List<string[]>() {peso,peso2,peso3,peso4};
-        string[] pes={"1","6","3","5","10"};
-        string[] pos={"2x","6x","2x","4x","7x"};   
+        string[] pes1={"1","6","3","5","10"};
+        string[] pos1={"2x","6x","2x","4x","7x"};  
+
+        string[] pes={"3","4","2","2","6","4","5","1","4","4","2","3","2","6","4","5","0.5","3","1","4","4","3","1","7"};
+        string[] pos={"5x","1x","2x","3x","1x","3x","5x","1x","4x","8x","2x","4x","3x","1x","3x","5x","6x","4x","5x","5x","2x","2x","1x","3x"};
         public static GameController Singleton { get; set; }
         //public static Balance;
 
@@ -82,9 +85,27 @@ namespace Common.Controllers
             cop++;
             _nivelFeedback.text="Fase "+cop;
         }
+        public void Startrandomgame(int gameModeId)
+        {
+            Menu.SetActive(false);
+            Game.SetActive(true);
+            GameController.Singleton.BlockController.ResetWeightBlocks();
+            LevelController.StartRChallenge(challengeId: gameModeId);
+            cop++;
+            _nivelFeedback.text="Fase "+cop;
+        }
+        public void NextChallengeRandom(int gameModeId)
+        {
+            Menu.SetActive(false);
+            Game.SetActive(true);
+            GameController.Singleton.BlockController.ResetWeightBlocks();
+            LevelController.StartRChallenge(challengeId: gameModeId);
+            cop++;
+            _nivelFeedback.text="Fase "+cop;
+        }
         public void NextChallenge(int gameModeId)
         {
-            if(cop>4)
+            if(cop>24)
             {
                 cop=0;
                 Menu.SetActive(true);
@@ -113,39 +134,14 @@ namespace Common.Controllers
             cop++;
             _nivelFeedback.text="Fase "+cop;
         }
-        //JOGAR POR MEIO DE UM DATABASE ONLINE
-        public void StartAPIGame(int gameModeId)
-        {
-            string[] phase=RAP.GetComponent<RestAPI3>().Apistring();
-            RAP.GetComponent<RestAPI3>().start();   
-            Debug.Log(phase[0]);
-            Debug.Log(phase[1]);
-            if(phase[0]=="-99"){
-                _filesearchfail.SetActive(true);
-            }
-            else{
-                Menu.SetActive(false);
-                Game.SetActive(true);
-               // GameController.Singleton.BlockController.ResetWeightBlocks();
-                LevelController.StartChallenge(challengeId: gameModeId,phase[1],phase[0]);
-            }
-        }
         //BUSCADOR DO API 
 
-        public void ApiGame(int gameModeId){
-            StartCoroutine(getstringG(gameModeId));
-        }
-
-        IEnumerator getstringG(int gameModeId)
-        { 
-            yield return StartCoroutine(RAP.GetComponent<RestAPI3>().GetData(_userfilename.text));
-            StartAPIGame(gameModeId);
-        }
+        
         
         //JOGAR POR UM ARQUIVO LOCAL BAIXADO
         public void StartOGame(int gameModeId)
         {
-            string[] phase=DetectFile(_userfilename.text);
+            string[] phase=DetectFile2(_userfilename.text);
             if(phase[0]=="-99"){
                 _filesearchfail.SetActive(true);
             }
@@ -154,6 +150,28 @@ namespace Common.Controllers
                 Game.SetActive(true);
                 GameController.Singleton.BlockController.ResetWeightBlocks();
                 LevelController.StartChallenge(challengeId: gameModeId,phase[0],phase[1]);
+            }
+        }
+        public string[] DetectFile2(string userinput)
+        {
+            userinput+=".txt";
+            string localFile = Application.dataPath + "/StorageLocal/Userstring.txt";
+            if(!File.Exists(localFile)){
+                Debug.Log("Nenhum arquivo encontrado");
+                return new string[] {"-99","1"};
+            }
+            else{
+                string localfile=Application.dataPath + "/StorageLocal/Userstring.txt";
+                string json=File.ReadAllText(localfile);
+                //Debug.Log(json); 
+                SimpleJSON.JSONNode stats=SimpleJSON.JSON.Parse(json);
+                string testo=stats[1][0];
+                Debug.Log(testo);   //TA FUNCIONANDO ASSIM->STATS[0][0] PESO E STATS[0][1] POS DO PRIMEIRO;; STATS[1][X] DO SEGUNDO E ETC
+                string[] pesoeposi=new string[] {"0","0"};
+                pesoeposi[0]=stats["pos"];
+                pesoeposi[1]=stats["pes"];
+                Debug.Log("Arquivo encontrado");
+                return pesoeposi;
             }
         }
         //BUSCADOR DO ARQUIVO

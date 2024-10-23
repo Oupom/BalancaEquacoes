@@ -4,18 +4,23 @@ using System;
 using Proyecto26;
 using UnityEngine;
 
+
 public class FirebaseManager : MonoBehaviour
 {
     public static FirebaseManager Instance;
     [Header("Jsons")]
     [SerializeField] private TextAsset jsonLoginSignup;
     [SerializeField] private TextAsset jsonPasswordreset;
+    [SerializeField] private TextAsset jsonUserid;
+    [SerializeField] private GameObject FireMenu;
+    [SerializeField] private GameObject GameMenu;
+
     
     private void Awake()
 	{
 		Instance = this;
 	}
-    public void FireLogin(string email, string password, Action<bool> result=null)
+    public void FireLogin(string email, string password, Action<bool,string> result=null)
     {
         string uri=Constants.ENDPOINT_LOGIN_OL+Constants.API_KEY_FIREBASE;
         string payload=jsonLoginSignup.text;
@@ -25,14 +30,16 @@ public class FirebaseManager : MonoBehaviour
             .Then((res)=>
             {
                 if(result!=null){
-                    result(true);
+                    
+                    result?.Invoke(true, res.Text);
+                    FireMenu.SetActive(false);
+                    GameMenu.SetActive(true);
                 }
             })
             .Catch((err)=>
             {
-                if(result!=null){
-                    result(false);
-                }
+                result?.Invoke(false, err.Message);
+                
             });
     }
     public void FireSignup(string email, string password, Action<bool,string> result=null){
@@ -44,6 +51,8 @@ public class FirebaseManager : MonoBehaviour
         .Then((res)=>
             {
                 result?.Invoke(true, res.Text);
+                FireMenu.SetActive(false);
+                GameMenu.SetActive(true);
             })
             .Catch((err)=>
             {

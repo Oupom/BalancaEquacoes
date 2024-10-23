@@ -12,6 +12,7 @@ namespace Models
 		public string title;
 
 		public string body;
+		public string[] nome;
 
 		public override string ToString(){
 			return UnityEngine.JsonUtility.ToJson (this, true);

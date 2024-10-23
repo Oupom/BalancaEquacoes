@@ -16,7 +16,14 @@ namespace Challenges
         private GameObject _nextChallengeButton;
         [SerializeField]
         private GameObject _nextChallengeButton2;
-        private float _trueWeight;
+        [SerializeField]
+        private GameObject _nextChallengeButton3;
+        [SerializeField]
+        public float _trueWeight;
+        [SerializeField]
+        public float _trueWeighter;
+        [SerializeField]
+        private InputField _TrueWeight;
         [SerializeField]
         private GameObject _NoWeight;
         
@@ -46,6 +53,8 @@ namespace Challenges
         [SerializeField]
         private GameObject _checkEquiButton;
         [SerializeField]
+        private GameObject _checkR;
+        [SerializeField]
         private Text _answerCorrectionFeedback;
         [SerializeField]
         private GameObject _GreenButton;
@@ -59,6 +68,8 @@ namespace Challenges
         private GameObject _BlockFactorybackground;
         [SerializeField]
         private GameObject _BlockFactorytoggle;
+        [SerializeField]
+        private GameObject _BlockFactorytoggleNew;
        //[SerializeField]
         //private GameObject _BlockFactorytoggle;
 
@@ -84,34 +95,22 @@ namespace Challenges
         {//******************************************************************2 
             int _desiredHook=0;
             float _convertedWeight;
-
+            _checkR.SetActive(false);
+            _nextChallengeButton3.SetActive(false);
             _UnitInput.SetActive(true);
             _ValueInput.SetActive(true);
             _BlockFactorytoggle.SetActive(true);
+            _BlockFactorytoggleNew.SetActive(false);
             _confirmAnswerButton.SetActive(true);
             _nextChallengeButton.SetActive(false);
             _checkEquiButton.SetActive(false);
             
             GameController.Singleton.BlockController.ResetWeightBlocks();
 
-
-/*            _numberOfWeightBlocks = Random.Range(1, 4);
-
-            int randomWeight = Random.Range(-1, 1);
-
-            do
-            {
-                _convertedWeight = Random.Range(-100, 100);
-                _convertedWeight /= 10;
-            } while (_convertedWeight == 0); */
-
             _convertedWeight = int.Parse(challengeP);
-
             _trueWeight = WeightUnitConverter.TrueWeight(_convertedWeight, 0);
             _answerInputValue.text = "";
             _answerCorrectionFeedback.text = "";
-            
-          //  Debug.Log("Number: " + _numberOfWeightBlocks);
             
             int randomWeight = 0;
             bool left = true;
@@ -165,6 +164,7 @@ namespace Challenges
                 GameController.Singleton.BlockController.CreateDefaultBlock(float.Parse(peso[i]), 0, weightBlockPosition);
                 weightBlockPosition.x+=1.0f;
             }
+            
             _checkEquiButton.SetActive(true);
             _confirmAnswerButton.SetActive(false);
             _nextChallengeButton.SetActive(false);
@@ -212,26 +212,6 @@ namespace Challenges
                     Debug.Log("NAO TA");
                 }
             }
-            /*
-            {
-                if(_GreenButton.activeSelf==true){
-                   if(_NoWeight.activeSelf==false)
-                    {
-                    Debug.Log("TACERTO!");  
-                    _answerCorrectionFeedback.text = "Em equiíbrio !";
-                    _nextChallengeButton2.SetActive(true);
-                    }
-                    else{
-                        _answerCorrectionFeedback.text = "Sem pesos !";
-                    }
-                }
-                else{
-                    _confirmAnswerButton.SetActive(false);
-                    _answerCorrectionFeedback.text = "Desbalanceada !";
-                    _nextChallengeButton2.SetActive(false);
-                    Debug.Log("NAO TA");
-                }
-            }*/
         }
         
         public override void StartRChallenge()
@@ -242,15 +222,19 @@ namespace Challenges
             float _trueWeight;
             float _convertedWeight;
 
-            _confirmAnswerButton.SetActive(true);
-            _nextChallengeButton.SetActive(true);
+            _confirmAnswerButton.SetActive(false);
+            _checkEquiButton.SetActive(false);
+            _checkR.SetActive(true);
+            _nextChallengeButton3.SetActive(false);
             _UnitInput.SetActive(true);
-            _ValueInput.SetActive(false);
+            _ValueInput.SetActive(true);
             _BlockFactorytoggle.SetActive(true);
+            _BlockFactorytoggleNew.SetActive(false);
             _BlockFactorybackground.SetActive(true);
+            
             GameController.Singleton.BlockController.ResetWeightBlocks();
             _numberOfWeightBlocks = Random.Range(1, 4);
-
+            
             int randomWeight = Random.Range(-1, 1);
 
             do
@@ -262,7 +246,8 @@ namespace Challenges
             _trueWeight = WeightUnitConverter.TrueWeight(_convertedWeight, 0);
             _answerInputValue.text = "";
             _answerCorrectionFeedback.text = "";
-            
+            _trueWeighter=_trueWeight;
+            //_TrueWeight.text=_trueWeight.ToString() ;
             Debug.Log("Number: " + _numberOfWeightBlocks);
             
             for (int i = 0; i < _numberOfWeightBlocks; i++)
@@ -285,6 +270,26 @@ namespace Challenges
                 GameController.Singleton.BlockController.CreateChallengeBlock(randomWeight, _convertedWeight, 0, GameController.Singleton.LevelController.MainBalance.GetHooks()[_desiredHook].transform.position);
             }
 
+        }
+        public void CheckAnswerR()
+        {
+            if (_answerInputValue.text != "")
+            {
+                //float truer= float.Parse(_trueWeight.text);
+                float answer = WeightUnitConverter.TrueWeight(float.Parse(_answerInputValue.text), _answerInputUnit.value);
+                if (answer == _trueWeighter)
+                {
+                    _answerCorrectionFeedback.text = "Correto !";
+                    _confirmAnswerButton.SetActive(false);
+                    _nextChallengeButton3.SetActive(true);
+                }
+                else
+                {
+                    Debug.Log("Resposta="+_trueWeighter);
+                    Debug.Log("Valor="+answer);
+                    _answerCorrectionFeedback.text = "Incorreto !";
+                }
+            }
         }
     } 
     

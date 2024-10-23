@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class AppManager : MonoBehaviour
     [SerializeField] private InputField inputEmailLogin;
     [SerializeField] private InputField inputPasswordLogin;
     [SerializeField] private Button buttonLogin;
+    [SerializeField] private GameObject userid;
 
     [Header("Signup")]
     [SerializeField] private InputField inputEmailSignup;
@@ -28,15 +30,18 @@ public class AppManager : MonoBehaviour
 
     private void OnButtonLoginClicked()
     {
-        FirebaseManager.Instance.FireLogin(inputEmailLogin.text, inputPasswordLogin.text, result =>
+        FirebaseManager.Instance.FireLogin(inputEmailLogin.text, inputPasswordLogin.text, (result, messsage) =>
         {
             if (result)
             {
                 print("Success login");
+                print("Message: " + messsage);
+                File.WriteAllText(Application.dataPath + "/StorageLocal/userid.txt", messsage);
             }
             else
             {
                 print("Error login");
+                print("Message: " + messsage);
             }
         });
     }

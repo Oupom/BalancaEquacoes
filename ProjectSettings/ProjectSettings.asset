@@ -902,11 +902,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: d2831e98-4a17-41f6-821f-dcf36d5594ec
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: BalancaEquacoes
+  organizationId: oupom
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 
